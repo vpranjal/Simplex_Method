@@ -101,7 +101,7 @@ Module Program
             local_temp.Add(i)
             local_temp1.Add(i)
         Next
-        If local_temp.Count() < 3 Then
+        If local_temp.Count() < 3 Then '' 3 should be nRows
             For i = (local_temp.Last() + 1) To nCols - 1
                 local_temp1.Add(i) '' Pass only one elemnt in temp list
                 Util_Comb(cols, nRows, local_temp1)
