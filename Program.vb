@@ -7,15 +7,18 @@ Module Program
     Dim Basic_Combinations As New List(Of List(Of Integer))
     Sub Main(args As String())
         '' Local Variables
+        '' Problem Initialization
+        '' We have these matrices somehow
+        '' Note: A Has a Full Rank Assumption -> Chapter 2 Page 19
         '' Dim A_Canonical As Double()()  '' Makes a Double Array
         Dim A_Canonical = Matrix.Build.DenseOfArray({{2.0, 1.0, 1.0, 1.0, 0.0, 0.0},
                                                     {1.0, 2.0, 3.0, 0.0, 1.0, 0.0},
-                                                    {2.0, 2.0, 1.0, 0.0, 0.0, 1.0}})
+                                                    {2.0, 2.0, 1.0, 0.0, 0.0, 1.0}}) '' Values Example 1: Chapter 3 Page 48
 
         Dim b_Canonical = Vector.Build.DenseOfArray({2.0, 5.0, 5.0}) '' Make a Double Array
 
         Dim c = Vector.Build.DenseOfArray({-3.0, -1.0, -3.0}) '' Objective Coefficients
-        Dim Basic_Index As Boolean() '' 1 shows the coumn is basic variable and 0 otherwise 
+        Dim Basic_Index As Integer() ''
         Dim nBasic As Integer  '' Number of Basic Variables
         Dim Degenerate As Boolean '' 1 if Degenrate, 0 if Non-Degenrate
         Dim nCols As Integer '' Number of Columns/Variables
@@ -40,13 +43,16 @@ Module Program
         nBasic = Sum_Array(Basic_Index) '' Number of Basic Variables
         Degenerate = IsDegenerate(nBasic, nRows) '' 1 if System is Degenerate, 0 if System is Non-Degererate
 
+        '' Hari: Write a Method to see r-z vector
+        '' All negetive elements
+        '' Coulumn Index 0 Starts
 
         Console.WriteLine(A_Canonical(1, 1))
 
 
     End Sub
 
-    Private Function Find_Basic(a_Canonical As Matrix) As Boolean()
+    Private Function Find_Basic(a_Canonical As Matrix) As Integer() '' Change to Inte
 
         Dim nCols As Integer = a_Canonical.ColumnCount '' Number of Columns of A
         Dim nRows As Integer = a_Canonical.RowCount '' Number of Rows of A
@@ -81,6 +87,12 @@ Module Program
             '' A_dash now has the columns in the ith commnination of BAsic Combination
             '' Now we check if this A_dash is full rank: Det is 0 or not
             Console.WriteLine(M.Determinant)
+            '' Hemant: Write a methond: Give is this identity
+            '' inverse = matrix
+
+            '' Break the loop
+            '' Return i
+
         Next
         ''Throw New NotImplementedException()
     End Function
