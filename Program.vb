@@ -18,7 +18,7 @@ Module Program
         Dim b_Canonical = Vector.Build.DenseOfArray({2.0, 5.0, 5.0}) '' Make a Double Array
 
         Dim c = Vector.Build.DenseOfArray({-3.0, -1.0, -3.0, 0.0, 0.0, 0.0}) '' Objective Coefficients
-        Dim Basic_Index As Integer() ''
+        Dim Basic_Index As List(Of Integer) ''
         Dim nBasic As Integer  '' Number of Basic Variables
         Dim Degenerate As Boolean '' 1 if Degenrate, 0 if Non-Degenrate
         Dim nCols As Integer '' Number of Columns/Variables
@@ -67,8 +67,7 @@ Module Program
         Throw New NotImplementedException()
     End Function
 
-    Private Function Find_Basic(a_Canonical As Matrix) As Integer() '' Change to Inte
-
+    Private Function Find_Basic(a_Canonical As Matrix) As List(Of Integer) '' Change to Integer
         Dim nCols As Integer = a_Canonical.ColumnCount '' Number of Columns of A
         Dim nRows As Integer = a_Canonical.RowCount '' Number of Rows of A
         Dim nCols_C_nRows As Integer = nComb(nCols, nRows) '' nCr  
@@ -101,12 +100,12 @@ Module Program
             Next
             '' A_dash now has the columns in the ith commnination of BAsic Combination
             '' Now we check if this A_dash is full rank: Det is 0 or not
-            Console.WriteLine(M.Determinant)
+            ''Console.WriteLine(M.Determinant)
             '' Hemant: Write a methond: Give is this identity
             '' 
             If Util_IsIdentity(M) Then
-                Console.WriteLine("i is : ", i)
-                ''Return i
+                Console.WriteLine("i is : ", i(0), i(1), i(2))
+                Return i
             End If
             '' Break the loop
             '' Return i
@@ -125,7 +124,7 @@ Module Program
         Dim temp As New List(Of Integer)
         Dim nCols As Integer = Cols.Count()
         Dim nextnCols As Integer = nCols - 1 '' to pass on to next recurssion
-        For i = 0 To nCols - (nCols - nRows) - 1
+        For i = 0 To nCols - (nCols - nRows)
             temp.Add(i) '' Pass only one elemnt in temp list
             Util_Comb(Cols, nRows, temp)
             temp.Clear()
@@ -149,9 +148,9 @@ Module Program
                     If oneFoundInColFlag = False Then
                         oneFoundInColFlag = True
                     Else
-                        Return False
+                        Return False '' If it enters 1 case twice in a column becomes false
                     End If
-                    a(j) = a(j) + 1
+                    a(j) = a(j) + 1 '' This will be updated only once as it will enter in a column only once--> We have a check for this just above
                 ElseIf M(j, i) = 0 Then
                     Continue For
                 Else
