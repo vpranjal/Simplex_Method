@@ -103,12 +103,21 @@ Module Program
             '' Now we check if this A_dash is full rank: Det is 0 or not
             Console.WriteLine(M.Determinant)
             '' Hemant: Write a methond: Give is this identity
-            '' inverse = matrix
-
+            '' 
+            If Util_IsIdentity(M) Then
+                Console.WriteLine("i is : ", i)
+                ''Return i
+            End If
             '' Break the loop
             '' Return i
 
         Next
+
+        ''Used for testing
+        ''Dim mTest = Matrix.Build.DenseOfArray({{0.0, 1.0, 0.0},
+        ''                                           {0.0, 0.0, 1.0},
+        ''                                           {1.0, 0.0, 0.0}})
+        ''Console.WriteLine("Test is identity : {0}", Util_IsIdentity(mTest))
         ''Throw New NotImplementedException()
     End Function
 
@@ -123,6 +132,42 @@ Module Program
         Next
 
         ''Throw New NotImplementedException()
+    End Function
+
+    Private Function Util_IsIdentity(M As Matrix)
+        Dim n = M.ColumnCount  '' Not checking here for square matrix , assuming it's square.
+        Dim a(n) As Integer
+        For i = 0 To n - 1
+            a(i) = 0
+        Next
+
+        Dim oneFoundInColFlag = False
+        For i = 0 To n - 1  '' i is column index
+            oneFoundInColFlag = False
+            For j = 0 To n - 1
+                If M(j, i) = 1 Then
+                    If oneFoundInColFlag = False Then
+                        oneFoundInColFlag = True
+                    Else
+                        Return False
+                    End If
+                    a(j) = a(j) + 1
+                ElseIf M(j, i) = 0 Then
+                    Continue For
+                Else
+                    Return False
+                End If
+            Next
+        Next
+
+        ''Have reached till here means all elements were either 0 or 1 and each column had only 1 '1'.
+        For i = 0 To n - 1
+            If a(i) <> 1 Then
+                Return False
+            End If
+        Next
+
+        Return True
     End Function
 
     Private Function Util_Comb(cols() As Integer, nRows As Integer, ByVal temp As List(Of Integer))
