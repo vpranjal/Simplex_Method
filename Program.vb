@@ -43,6 +43,8 @@ Module Program
         nBasic = Sum_Array(Basic_Index) '' Number of Basic Variables
         Degenerate = IsDegenerate(nBasic, nRows) '' 1 if System is Degenerate, 0 if System is Non-Degererate
 
+        '' Compute r and z
+        z = Compute_z(A_Canonical, c)
         '' Hari: Write a Method to see r-z vector
         '' All negetive elements
         '' Coulumn Index 0 Starts
@@ -51,6 +53,19 @@ Module Program
 
 
     End Sub
+
+    Private Function Compute_z(a_Canonical As Matrix(Of Double), c As Vector(Of Double)) As Double()
+        Dim nCols As Integer = a_Canonical.ColumnCount '' Number of Columns of A
+        Dim nRows As Integer = a_Canonical.RowCount '' Number of Rows of A
+        Dim temp = Vector(Of Double).Build.Dense(nRows)
+        For j = 0 To nRows - 1
+            For i = 0 To nCols - 1
+                temp(j) = temp(j) + (c(j) * a_Canonical(i, j))
+            Next
+        Next
+
+            Throw New NotImplementedException()
+    End Function
 
     Private Function Find_Basic(a_Canonical As Matrix) As Integer() '' Change to Inte
 
