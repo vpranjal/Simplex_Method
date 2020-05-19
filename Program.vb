@@ -16,7 +16,6 @@ Module Program
                                                     {2.0, 2.0, 1.0, 0.0, 0.0, 1.0}}) '' Values Example 1: Chapter 3 Page 48
 
         Dim b_Canonical = Vector.Build.DenseOfArray({2.0, 5.0, 5.0}) '' Make a Double Array
-
         Dim c = Vector.Build.DenseOfArray({-3.0, -1.0, -3.0, 0.0, 0.0, 0.0}) '' Objective Coefficients
         Dim Basic_Index As List(Of Integer) ''
         Dim All_Index As List(Of Integer)
@@ -43,6 +42,9 @@ Module Program
         Non_Basic_Index = Find_Non_Basic(A_Canonical, Basic_Index)
         nCols = A_Canonical.ColumnCount '' Number of Columns of A
         nRows = A_Canonical.RowCount '' Number of Rows of A
+        Dim x = Vector(Of Double).Build.Dense(nCols)
+        x = Get_x(A_Canonical, b_Canonical, Basic_Index, Non_Basic_Index) '' (2,5,5,0,0,0) '' Hemant
+
         ''Initialize All_Index
 
 
@@ -60,6 +62,16 @@ Module Program
 
 
     End Sub
+
+    Private Function Get_x(a_Canonical As Matrix(Of Double), b_Canonical As Vector(Of Double), basic_Index As List(Of Integer), non_Basic_Index As List(Of Integer)) As Vector(Of Double)
+        '' Go thorugh all the cols(j) in A
+        '' See if col is non basic-> Add temp(j)= 0
+        '' See if col is basic-?
+        '' Find the non zero row index (Loop All Rows (i)- Find If A(i,j)=1, then temp(j)=b(i))
+        Dim temp = Vector.Build.DenseOfArray({2.0, 5.0, 5.0, 0.0, 0.0, 0.0}) '' Make a Double Array
+        Return temp
+        Throw New NotImplementedException()
+    End Function
 
     Private Function Find_Non_Basic(a_Canonical As Matrix(Of Double), basic_Index As List(Of Integer)) As List(Of Integer)
         Dim All_Index As New List(Of Integer)
