@@ -45,8 +45,10 @@ Module Program
         Dim r = Vector(Of Double).Build.Dense(nCols) '' Relative Cost
         x = Get_x(A_Canonical, b_Canonical, Basic_Index, Non_Basic_Index) '' (0, 0, 0,2,5,5) 
         Dim q As Integer '' Incoming Index
+        Dim p As Integer '' Leaving Index
         Dim IsOptimal As Boolean '' 1 if Solution is Optimal, 0 otherwise
         nBasic = Basic_Index.Count
+        Dim ratio = Vector(Of Double).Build.Dense(nBasic)
         Degenerate = IsDegenerate(Basic_Index, x) '' 1 if System is Degenerate, 0 if System is Non-Degererate
 
         '' Compute r and z
@@ -59,11 +61,23 @@ Module Program
         '' Incoming Index-> Method (Step 2)
         '' Pranjal: Retun me an index q As Integer: the index of the most negetive element in (r, Non_Basic_Index) 
         q = Incoming_Index(r, Non_Basic_Index)
+        ratio = Set_Ratio(A_Canonical, b_Canonical, Basic_Index, q)
 
         Console.WriteLine(A_Canonical(1, 1))
 
 
     End Sub
+
+    Private Function Set_Ratio(a_Canonical As Matrix(Of Double), b_Canonical As Vector(Of Double), basic_Index As List(Of Integer), q As Integer) As Vector(Of Double)
+        Dim temp = Vector(Of Double).Build.Dense(basic_Index.Count)
+        Dim nCols As Integer = a_Canonical.ColumnCount '' Number of Columns of A
+        Dim nRows As Integer = a_Canonical.RowCount '' Number of Rows of A
+        For i = 0 To nRows - 1
+            temp(i) = b_Canonical(i) / a_Canonical(i, q)
+        Next
+        Return temp
+        ''Throw New NotImplementedException()
+    End Function
 
     Private Function Optimal_Check(r As Vector(Of Double), non_Basic_Index As List(Of Integer)) As Boolean
         Dim temp As Boolean = True
@@ -191,7 +205,6 @@ Module Program
                 For temp = 0 To i.Count() - 1
                     A_dash(j)(temp) = a_Canonical(j, i(temp))
                     M(j, temp) = a_Canonical(j, i(temp))
-                    ''temp = +1
                 Next
             Next
             '' A_dash now has the columns in the ith commnination of BAsic Combination
