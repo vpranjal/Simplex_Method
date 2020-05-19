@@ -15,7 +15,7 @@ Module Program
         '' Chcek for Page : 66: 4th Edition
         '' Check 56, 54
 
-        ''                                                 x    y    z    s   s    s  
+        ''Compare with : New_gms2                        x    y    z    s   s    s  
         ''Dim A_Canonical = Matrix.Build.DenseOfArray({{2.0, 1.0, 1.0, 1.0, 0.0, 0.0},
         ''                                             {1.0, 2.0, 3.0, 0.0, 1.0, 0.0},
         ''                                             {2.0, 2.0, 1.0, 0.0, 0.0, 1.0}}) '' Values Example 1: Chapter 3 Page 48
@@ -24,8 +24,8 @@ Module Program
         ''Dim c = Vector.Build.DenseOfArray({-3.0, -1.0, -3.0, 0.0, 0.0, 0.0}) '' Objective Coefficients
         ''*****************************************
 
-        ''Page 56 problem
-        ''                                            s  s  s  x  y  z
+        ''Compare with : New_gms1
+        ''                                                     s  s  s  x  y  z
         ''       Dim A_Canonical = Matrix.Build.DenseOfArray({{1, 0, 0, 2, 4, 6},
         ''                                                  {0, 1, 0, 1, 2, 3},
         ''                                                {0, 0, 1, -1, 2, 1}}) '' Values Page 56
@@ -33,14 +33,32 @@ Module Program
         ''        Dim b_Canonical = Vector.Build.DenseOfArray({4, 3, 1}) '' Make a Double Array
         ''      Dim c = Vector.Build.DenseOfArray({0, 0, 0, -1, -1, -1}) '' Objective Coefficients
 
-        ''Page 56 problem
+        ''Compare with : New_gms5
         ''                                            s  s  s  x  y  z
-        Dim A_Canonical = Matrix.Build.DenseOfArray({{1, 0, 0, 2, 1, -3},
-                                                   {0, 1, 0, 2, -1, 5},
-                                                 {0, 0, 1, -4, 1, 1}}) '' Values Page 56
+        ''Dim A_Canonical = Matrix.Build.DenseOfArray({{1, 0, 0, 2, 1, -3},
+        ''                                          {0, 1, 0, 2, -1, 5},
+        ''                                       {0, 0, 1, -4, 1, 1}}) '' Values Page 56
 
-        Dim b_Canonical = Vector.Build.DenseOfArray({2, 6, 6}) '' Make a Double Array
-        Dim c = Vector.Build.DenseOfArray({0, 0, 0, -1, -2, -1}) '' Objective Coefficients
+        ''Dim b_Canonical = Vector.Build.DenseOfArray({2, 6, 6}) '' Make a Double Array
+        ''Dim c = Vector.Build.DenseOfArray({0, 0, 0, -1, -2, -1}) '' Objective Coefficients
+
+        '' Cyclic Issue
+        ''                                            s  s  m1  x  y  z   m2 
+        ''Dim A_Canonical = Matrix.Build.DenseOfArray({{1, 0, 0, 2, 1, -3, 0},
+        ''                                           {0, 1, 0, 2, -1, 5, 0},
+        ''                                         {0, 0, 1, -4, 1, 1, -1}}) '' Values Page 56
+
+        ''Dim b_Canonical = Vector.Build.DenseOfArray({2, 6, 9}) '' Make a Double Array
+        '' Dim c = Vector.Build.DenseOfArray({0, 0, 100, -1, -2, -1, 100}) '' Objective Coefficients
+
+        '' Cyclic Resolved- Not Addressed
+        ''                                            s  s  s  x  y  z   m1   m2 
+        Dim A_Canonical = Matrix.Build.DenseOfArray({{1, 0, 0, 2, 1, -3, 0, 0},
+                                                   {0, 1, 0, 2, -1, 5, 0, 0},
+                                                 {0, 0, 1, -4, 1, 1, -1, 1}}) '' Values Page 56
+
+        Dim b_Canonical = Vector.Build.DenseOfArray({2, 6, 9}) '' Make a Double Array
+        Dim c = Vector.Build.DenseOfArray({0, 0, 0, -1, -2, -1, 100, 100}) '' Objective Coefficients
         '' this returns all zeros as solution probably problem with optimal solution
         ''**********************************
 
