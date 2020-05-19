@@ -18,6 +18,7 @@ Module Program
         Dim b_Canonical = Vector.Build.DenseOfArray({2.0, 5.0, 5.0}) '' Make a Double Array
         Dim c = Vector.Build.DenseOfArray({-3.0, -1.0, -3.0, 0.0, 0.0, 0.0}) '' Objective Coefficients
         Dim Basic_Index As List(Of Integer) ''
+        Dim oBasic_Index As Vector(Of Double) '' Ordered Basic Index
         Dim All_Index As List(Of Integer)
         Dim Non_Basic_Index As List(Of Integer)
         Dim nBasic As Integer  '' Number of Basic Variables
@@ -64,10 +65,36 @@ Module Program
         q = Incoming_Index(r, Non_Basic_Index)
         ratio = Set_Ratio(A_Canonical, b_Canonical, Basic_Index, q)
         IsUnBounded = Boundedness_Check(ratio)
+        oBasic_Index = Order_Basic_Index(Basic_Index, A_Canonical)
+        ''p = Exiting_Index(ratio, oBasic_Index)
+
         Console.WriteLine(A_Canonical(1, 1))
 
 
     End Sub
+
+    Private Function Order_Basic_Index(basic_Index As List(Of Integer), a_Canonical As Matrix(Of Double)) As Vector(Of Double)
+        Dim temp As New List(Of Double) '' Catch the 1s
+        Dim temp2 = Vector(Of Double).Build.Dense(basic_Index.Count) '' Reorder
+        Dim nCols As Integer = a_Canonical.ColumnCount '' Number of Columns of A
+        Dim nRows As Integer = a_Canonical.RowCount '' Number of Rows of A
+        For Each j In basic_Index
+            For i = 0 To nRows - 1
+                If a_Canonical(i, j) = 1 Then
+                    temp.Add(i)
+                    '' Need to break inner For loop
+                End If
+            Next
+        Next
+
+
+        For i = 0 To basic_Index.Count - 1
+
+            temp2(temp(i)) = basic_Index(i) '' Reorder here
+        Next
+        Return temp2
+        ''Throw New NotImplementedException()
+    End Function
 
     Private Function Boundedness_Check(ratio As Vector(Of Double)) As Boolean
         Dim temp As Boolean = True
