@@ -59,6 +59,17 @@ Module Program
 
         Dim b_Canonical = Vector.Build.DenseOfArray({2, 6, 9}) '' Make a Double Array
         Dim c = Vector.Build.DenseOfArray({0, 0, 0, -1, -2, -1, 100, 100}) '' Objective Coefficients
+
+
+        '' 3 node opf
+        ''                                            s  s  s  s  x  y  m1  m2  
+        ''Dim A_Canonical = Matrix.Build.DenseOfArray({{1, 0, 0, 0, 1, 1, -1, 1},
+        ''                                             {0, 1, 0, 0, 1, 0, 0, 0},
+        ''                                             {0, 0, 1, 0, 0, 1, 0, 0},
+        ''                                             {0, 0, 0, 1, -0.333, 0.333, 0, 0}}) '' Values Page 56
+
+        ''Dim b_Canonical = Vector.Build.DenseOfArray({100, 100, 100, 30}) '' Make a Double Array
+        ''Dim c = Vector.Build.DenseOfArray({100, 0, 0, 0, 2, 1, 100, 100}) '' Objective Coefficients
         '' this returns all zeros as solution probably problem with optimal solution
         ''**********************************
 
@@ -544,7 +555,7 @@ Module Program
             local_temp.Add(i)
             local_temp1.Add(i)
         Next
-        If local_temp.Count() < 3 Then '' 3 should be nRows
+        If local_temp.Count() < nRows Then
             For i = (local_temp.Last() + 1) To nCols - 1
                 local_temp1.Add(i) '' Pass only one elemnt in temp list
                 Util_Comb(cols, nRows, local_temp1)
