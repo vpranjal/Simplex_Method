@@ -44,13 +44,14 @@ Module Program
         nRows = A_Canonical.RowCount '' Number of Rows of A
         Dim x = Vector(Of Double).Build.Dense(nCols)
         x = Get_x(A_Canonical, b_Canonical, Basic_Index, Non_Basic_Index) '' (2,5,5,0,0,0) '' Hemant
-
+        nBasic = Basic_Index.Count
+        Degenerate = IsDegenerate(Basic_Index, x) '' 1 if System is Degenerate, 0 if System is Non-Degererate
         ''Initialize All_Index
 
 
 
         ''nBasic = Sum_Array(Basic_Index) '' Number of Basic Variables
-        ''Degenerate = IsDegenerate(nBasic, nRows) '' 1 if System is Degenerate, 0 if System is Non-Degererate
+        ''
 
         '' Compute r and z
         z = Compute_z(A_Canonical, c)
@@ -251,8 +252,14 @@ Module Program
         Throw New NotImplementedException()
     End Function
 
-    Private Function IsDegenerate(nBasic As Integer, nRows As Integer) As Boolean
-        Return If(nBasic = nRows, 0, 1)
+    Private Function IsDegenerate(Basic_Index As List(Of Integer), x As Vector(Of Double)) As Boolean
+        Dim temp As Boolean = False
+        For Each i In Basic_Index
+            If x(i) = 0 Then
+                temp = False
+            End If
+        Next
+        Return temp
         Throw New NotImplementedException()
     End Function
 
