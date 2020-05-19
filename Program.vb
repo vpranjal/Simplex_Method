@@ -16,11 +16,34 @@ Module Program
         '' Check 56, 54
 
         Dim A_Canonical = Matrix.Build.DenseOfArray({{2.0, 1.0, 1.0, 1.0, 0.0, 0.0},
-                                                    {1.0, 2.0, 3.0, 0.0, 1.0, 0.0},
-                                                    {2.0, 2.0, 1.0, 0.0, 0.0, 1.0}}) '' Values Example 1: Chapter 3 Page 48
+                                                     {1.0, 2.0, 3.0, 0.0, 1.0, 0.0},
+                                                     {2.0, 2.0, 1.0, 0.0, 0.0, 1.0}}) '' Values Example 1: Chapter 3 Page 48
 
         Dim b_Canonical = Vector.Build.DenseOfArray({2.0, 5.0, 6.0}) '' Make a Double Array
         Dim c = Vector.Build.DenseOfArray({-3.0, -1.0, -3.0, 0.0, 0.0, 0.0}) '' Objective Coefficients
+        ''*****************************************
+
+        ''Page 56 problem
+        ''Dim A_Canonical = Matrix.Build.DenseOfArray({{1, 0, 0, 2, 4, 6},
+        ''                                           {0, 1, 0, 1, 2, 3},
+        ''                                         {0, 0, 1, -1, 2, 1}}) '' Values Example 1: Chapter 3 Page 48
+
+        ''Dim b_Canonical = Vector.Build.DenseOfArray({4, 3, 1}) '' Make a Double Array
+        ''Dim c = Vector.Build.DenseOfArray({0, 0, 0, 0, 0, 0}) '' Objective Coefficients
+        '' this returns all zeros as solution probably problem with optimal solution
+        ''**********************************
+
+        '' Page 54 problem
+        ''Dim A_Canonical = Matrix.Build.DenseOfArray({{1, 0, 0, 1, 1, -1},
+        ''                                           {0, 1, 0, 2, -3, 1},
+        ''                                         {0, 0, 1, -1, 2, -1}}) '' Values Example 1: Chapter 3 Page 48
+
+        ''Dim b_Canonical = Vector.Build.DenseOfArray({5, 3, -1}) '' Make a Double Array
+        ''Dim c = Vector.Build.DenseOfArray({0, 0, 0, 0, 0, 0}) '' Objective Coefficients
+
+        '' getting [5 3 -1 0 0 0] for this
+        ''*************************************
+
         Dim Basic_Index As List(Of Integer) ''
         Dim oBasic_Index As Vector(Of Double) '' Ordered Basic Index
         Dim All_Index As List(Of Integer)
@@ -45,6 +68,17 @@ Module Program
         '' Pink Elephant - Linear Program Solver
         '' Initiate...
         '' Loading problem...
+        For i = 1 To 70
+            Console.Write("*")
+        Next
+        Console.WriteLine()
+        Console.WriteLine(" Pink Elephant - Linear Program Solver")
+        Console.WriteLine("Initiate...")
+        Console.WriteLine("Loading problem...")
+        For i = 1 To 70
+            Console.Write("*")
+        Next
+        Console.WriteLine()
         Basic_Index = Find_Basic(A_Canonical)
         Non_Basic_Index = Find_Non_Basic(A_Canonical, Basic_Index)
         nCols = A_Canonical.ColumnCount '' Number of Columns of A
@@ -127,9 +161,14 @@ Module Program
             nIter = nIter + 1
             '' Iteration No: nIter, Objective Value: c*x, Reached Optimality: False
 
-            Console.WriteLine(nIter)
-            Console.WriteLine(c * x)
-
+            ''Console.WriteLine(nIter)
+            ''Console.WriteLine(c * x)
+            If (Not IsOptimal) Then
+                Console.WriteLine("Iteration No: {0}", nIter)
+                Console.WriteLine("Objective Value: {0}", c * x)
+                Console.WriteLine("Reached Optimality: False")
+                Console.WriteLine()
+            End If
         End While
         '' *****************************
         '' Optimal Solution Found
@@ -137,8 +176,19 @@ Module Program
         '' Optimal Value: c*x
 
 
-        Console.WriteLine(A_Canonical(1, 1))
+        '' Console.WriteLine(A_Canonical(1, 1))
 
+        For i = 1 To 70
+            Console.Write("*")
+        Next
+        Console.WriteLine()
+        Console.WriteLine("Optimal Solution Found")
+        Console.Write("Optimal Solution: [")
+        For Each i In x
+            Console.Write("{0} ", Math.Truncate(i * 100) / 100)
+        Next
+        Console.WriteLine("]")
+        Console.WriteLine("Optimal Value: {0}", c * x)
 
     End Sub
 
