@@ -43,8 +43,9 @@ Module Program
         nRows = A_Canonical.RowCount '' Number of Rows of A
         Dim x = Vector(Of Double).Build.Dense(nCols)
         Dim r = Vector(Of Double).Build.Dense(nCols) '' Relative Cost
-        x = Get_x(A_Canonical, b_Canonical, Basic_Index, Non_Basic_Index) '' (0, 0, 0,2,5,5) '' Hemant
+        x = Get_x(A_Canonical, b_Canonical, Basic_Index, Non_Basic_Index) '' (0, 0, 0,2,5,5) 
         Dim q As Integer '' Incoming Index
+        Dim IsOptimal As Boolean '' 1 if Solution is Optimal, 0 otherwise
         nBasic = Basic_Index.Count
         Degenerate = IsDegenerate(Basic_Index, x) '' 1 if System is Degenerate, 0 if System is Non-Degererate
 
@@ -92,9 +93,29 @@ Module Program
         '' See if col is non basic-> Add temp(j)= 0
         '' See if col is basic-?
         '' Find the non zero row index (Loop All Rows (i)- Find If A(i,j)=1, then temp(j)=b(i))
-        Dim temp = Vector.Build.DenseOfArray({0.0, 0.0, 0.0, 2.0, 5.0, 5.0}) '' Make a Double Array
-        Return temp
-        Throw New NotImplementedException()
+        Dim nCols As Integer = a_Canonical.ColumnCount '' Number of Columns of A
+        Dim nRows As Integer = a_Canonical.RowCount '' Number of Rows of A
+        Dim temp = Matrix(Of Double).Build.Dense(nRows, nRows)
+        Dim k As Integer = 0 ' k is index for temp columns
+        For Each j In basic_Index
+            For i = 0 To nRows - 1
+                temp(i, k) = a_Canonical(i, j)
+            Next
+            k = k + 1 '' Increment k
+        Next
+        Dim temp2 = temp.Inverse * b_Canonical '' This is the x values for all basic variables
+        '' Now complete temp3
+        k = 0 '' Will use k as flag for temp2 basic variable vector 
+        Dim temp3 = Vector(Of Double).Build.Dense(nCols)
+        For Each j In basic_Index
+            temp3(j) = temp2(k)
+            k = k + 1
+        Next
+        Return temp3
+
+        ''Dim temp = Vector.Build.DenseOfArray({0.0, 0.0, 0.0, 2.0, 5.0, 5.0}) '' Make a Double Array
+        ''Return temp
+        ''Throw New NotImplementedException()
     End Function
 
     Private Function Find_Non_Basic(a_Canonical As Matrix(Of Double), basic_Index As List(Of Integer)) As List(Of Integer)
