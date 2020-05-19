@@ -15,12 +15,47 @@ Module Program
         '' Chcek for Page : 66: 4th Edition
         '' Check 56, 54
 
-        Dim A_Canonical = Matrix.Build.DenseOfArray({{2.0, 1.0, 1.0, 1.0, 0.0, 0.0},
-                                                    {1.0, 2.0, 3.0, 0.0, 1.0, 0.0},
-                                                    {2.0, 2.0, 1.0, 0.0, 0.0, 1.0}}) '' Values Example 1: Chapter 3 Page 48
+        ''                                                 x    y    z    s   s    s  
+        ''Dim A_Canonical = Matrix.Build.DenseOfArray({{2.0, 1.0, 1.0, 1.0, 0.0, 0.0},
+        ''                                             {1.0, 2.0, 3.0, 0.0, 1.0, 0.0},
+        ''                                             {2.0, 2.0, 1.0, 0.0, 0.0, 1.0}}) '' Values Example 1: Chapter 3 Page 48
 
-        Dim b_Canonical = Vector.Build.DenseOfArray({2.0, 5.0, 6.0}) '' Make a Double Array
-        Dim c = Vector.Build.DenseOfArray({-3.0, -1.0, -3.0, 0.0, 0.0, 0.0}) '' Objective Coefficients
+        ''Dim b_Canonical = Vector.Build.DenseOfArray({2.0, 5.0, 6.0}) '' Make a Double Array
+        ''Dim c = Vector.Build.DenseOfArray({-3.0, -1.0, -3.0, 0.0, 0.0, 0.0}) '' Objective Coefficients
+        ''*****************************************
+
+        ''Page 56 problem
+        ''                                            s  s  s  x  y  z
+        Dim A_Canonical = Matrix.Build.DenseOfArray({{1, 0, 0, 2, 4, 6},
+                                                   {0, 1, 0, 1, 2, 3},
+                                                 {0, 0, 1, -1, 2, 1}}) '' Values Page 56
+
+        Dim b_Canonical = Vector.Build.DenseOfArray({4, 3, 1}) '' Make a Double Array
+        Dim c = Vector.Build.DenseOfArray({0, 0, 0, -1, -1, -1}) '' Objective Coefficients
+        '' this returns all zeros as solution probably problem with optimal solution
+        ''**********************************
+
+        '' Page 54 problem
+        ''                                              s  s  s  x  y  z   
+        ''Dim A_Canonical = Matrix.Build.DenseOfArray({{1, 0, 0, 1, 1, -1},
+        ''                                           {0, 1, 0, 2, -3, 1},
+        ''                                         {0, 0, 1, -1, 2, -1}}) '' Values Example 1: Chapter 3 Page 48
+
+        ''Dim b_Canonical = Vector.Build.DenseOfArray({5, 3, -1}) '' Make a Double Array
+        ''Dim c = Vector.Build.DenseOfArray({0, 0, 0, -1, -2, 1}) '' Objective Coefficients
+
+        ''                                              s  s  s  x  y  z   
+        ''Dim A_Canonical = Matrix.Build.DenseOfArray({{1, 0, 0, 1, 1, -1},
+        ''                                           {0, 1, 0, 2, -3, 1},
+        ''                                         {0, 0, 1, -1, 2, -1}}) '' Values Example 1: Chapter 3 Page 48
+
+        ''Dim b_Canonical = Vector.Build.DenseOfArray({5, 3, -1}) '' Make a Double Array
+        ''Dim c = Vector.Build.DenseOfArray({0, 0, 0, -1, -2, -1}) '' Objective Coefficients
+
+
+        '' getting [5 3 -1 0 0 0] for this
+
+
         Dim Basic_Index As List(Of Integer) ''
         Dim oBasic_Index As Vector(Of Double) '' Ordered Basic Index
         Dim All_Index As List(Of Integer)
@@ -45,6 +80,18 @@ Module Program
         '' Pink Elephant - Linear Program Solver
         '' Initiate...
         '' Loading problem...
+        For i = 1 To 70
+            Console.Write("*")
+        Next
+        Console.WriteLine()
+        Console.WriteLine(" Pink Elephant - Linear Program Solver")
+        Console.WriteLine("Initiate...")
+        Console.WriteLine("Loading problem...")
+        For i = 1 To 70
+            Console.Write("*")
+        Next
+        Console.WriteLine()
+
         Basic_Index = Find_Basic(A_Canonical)
         Non_Basic_Index = Find_Non_Basic(A_Canonical, Basic_Index)
         nCols = A_Canonical.ColumnCount '' Number of Columns of A
@@ -73,7 +120,7 @@ Module Program
         '' Pranjal: Retun me an index q As Integer: the index of the most negetive element in (r, Non_Basic_Index) 
         q = Incoming_Index(r, Non_Basic_Index)
         ratio = Set_Ratio(A_Canonical, b_Canonical, Basic_Index, q)
-        IsUnBounded = Boundedness_Check(ratio)
+        IsUnBounded = Boundedness_Check(ratio, Basic_Index)
         oBasic_Index = Order_Basic_Index(Basic_Index, A_Canonical)
         p = Exiting_Index(ratio, oBasic_Index)
         ''pivot(A_Canonical, b_Canonical, A_next, b_next, p, q)
@@ -93,9 +140,9 @@ Module Program
             r = Compute_r(c, z)
             q = Incoming_Index(r, Non_Basic_Index)
             ratio = Set_Ratio(A_Canonical, b_Canonical, Basic_Index, q)
-            IsUnBounded = Boundedness_Check(ratio)
+            IsUnBounded = Boundedness_Check(ratio, Basic_Index)
             If IsUnBounded Then
-                Console.WriteLine("Problem Unbounded- Stop")
+                Console.WriteLine("Problem Unbounded (Ratio Test Failed)- Exiting Algorithm ...")
                 Exit While
             End If
             oBasic_Index = Order_Basic_Index(Basic_Index, A_Canonical)
@@ -124,11 +171,22 @@ Module Program
             '' Optimality Check
             IsOptimal = Optimal_Check(r, Non_Basic_Index)
             x = Get_x(A_Canonical, b_Canonical, Basic_Index, Non_Basic_Index)
+            IsUnBounded = Unbounded_Test2(x) '' Page 41 Discussion on validity of ratio test
+            If IsUnBounded Then
+                Console.WriteLine("Problem Unbounded (Back up Test Failed)- Exiting Algorithm ...")
+                Exit While
+            End If
             nIter = nIter + 1
             '' Iteration No: nIter, Objective Value: c*x, Reached Optimality: False
 
-            Console.WriteLine(nIter)
-            Console.WriteLine(c * x)
+            ''Console.WriteLine(nIter)
+            ''Console.WriteLine(c * x)
+            Console.WriteLine("Iteration No: {0}", nIter)
+            Console.WriteLine("Objective Value: {0}", c * x)
+            If (Not IsOptimal) Then
+                Console.WriteLine("Reached Optimality: False")
+                Console.WriteLine()
+            End If
 
         End While
         '' *****************************
@@ -137,10 +195,38 @@ Module Program
         '' Optimal Value: c*x
 
 
-        Console.WriteLine(A_Canonical(1, 1))
+        For i = 1 To 70
+            Console.Write("*")
+        Next
+        Console.WriteLine()
+        If IsOptimal Then
+            Console.WriteLine("Optimal Solution Found")
+            Console.Write("Optimal Solution: [")
+            For Each i In x
+                Console.Write("{0} ", Math.Truncate(i * 100) / 100)
+            Next
+        ElseIf IsUnBounded Then
+            Console.WriteLine("Problem Unbounded")
+        Else
+            Console.WriteLine("Problem Infeasible")
+        End If
+
+        Console.WriteLine("]")
+        Console.WriteLine("Optimal Value: {0}", c * x)
 
 
     End Sub
+
+    Private Function Unbounded_Test2(x As Vector(Of Double)) As Boolean
+        Dim temp As Boolean = False
+        For Each i In x
+            If i < 0 Then
+                temp = True '' This is a double check if the ratio test suceeded in maintaining feasibility
+            End If
+        Next
+        Return temp
+        ''Throw New NotImplementedException()
+    End Function
 
     Private Sub pivot(a_Canonical As Matrix(Of Double), b_Canonical As Vector(Of Double), ByRef a_next As Matrix(Of Double), ByRef b_next As Vector(Of Double), p As Integer, q As Integer)
         Dim nCols As Integer = a_Canonical.ColumnCount '' Number of Columns of A
@@ -199,7 +285,7 @@ Module Program
         ''Throw New NotImplementedException()
     End Function
 
-    Private Function Boundedness_Check(ratio As Vector(Of Double)) As Boolean
+    Private Function Boundedness_Check(ratio As Vector(Of Double), basic_Index As List(Of Integer)) As Boolean
         Dim temp As Boolean = True
         For Each i In ratio
             If i > 0 Then
