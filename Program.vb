@@ -44,6 +44,7 @@ Module Program
         Dim x = Vector(Of Double).Build.Dense(nCols)
         Dim r = Vector(Of Double).Build.Dense(nCols) '' Relative Cost
         x = Get_x(A_Canonical, b_Canonical, Basic_Index, Non_Basic_Index) '' (0, 0, 0,2,5,5) '' Hemant
+        Dim q As Integer '' Incoming Index
         nBasic = Basic_Index.Count
         Degenerate = IsDegenerate(Basic_Index, x) '' 1 if System is Degenerate, 0 if System is Non-Degererate
 
@@ -56,11 +57,26 @@ Module Program
 
         '' Incoming Index-> Method (Step 2)
         '' Pranjal: Retun me an index q As Integer: the index of the most negetive element in (r, Non_Basic_Index) 
+        q = Incoming_Index(r, Non_Basic_Index)
 
         Console.WriteLine(A_Canonical(1, 1))
 
 
     End Sub
+
+    Private Function Incoming_Index(r As Vector(Of Double), non_Basic_Index As List(Of Integer)) As Integer
+        Dim threshold As Integer = 0
+        Dim temp As Integer = 0
+        For Each j In non_Basic_Index
+            If r(j) < threshold Then
+                temp = j
+                threshold = r(j)
+            End If
+        Next
+        ''Return temp
+        Return 1
+        Throw New NotImplementedException()
+    End Function
 
     Private Function Compute_r(c As Vector(Of Double), z As Vector(Of Double)) As Vector(Of Double)
         Dim temp = Vector(Of Double).Build.Dense(c.Count())
@@ -148,7 +164,6 @@ Module Program
             Next
             '' A_dash now has the columns in the ith commnination of BAsic Combination
             '' Now we check if this A_dash is full rank: Det is 0 or not
-            ''Console.WriteLine(M.Determinant)
             '' Hemant: Write a methond: Give is this identity
             '' 
             If Util_IsIdentity(M) Then
