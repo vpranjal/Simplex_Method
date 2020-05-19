@@ -26,12 +26,21 @@ Module Program
 
         ''Page 56 problem
         ''                                            s  s  s  x  y  z
-        Dim A_Canonical = Matrix.Build.DenseOfArray({{1, 0, 0, 2, 4, 6},
-                                                   {0, 1, 0, 1, 2, 3},
-                                                 {0, 0, 1, -1, 2, 1}}) '' Values Page 56
+        ''       Dim A_Canonical = Matrix.Build.DenseOfArray({{1, 0, 0, 2, 4, 6},
+        ''                                                  {0, 1, 0, 1, 2, 3},
+        ''                                                {0, 0, 1, -1, 2, 1}}) '' Values Page 56
 
-        Dim b_Canonical = Vector.Build.DenseOfArray({4, 3, 1}) '' Make a Double Array
-        Dim c = Vector.Build.DenseOfArray({0, 0, 0, -1, -1, -1}) '' Objective Coefficients
+        ''        Dim b_Canonical = Vector.Build.DenseOfArray({4, 3, 1}) '' Make a Double Array
+        ''      Dim c = Vector.Build.DenseOfArray({0, 0, 0, -1, -1, -1}) '' Objective Coefficients
+
+        ''Page 56 problem
+        ''                                            s  s  s  x  y  z
+        Dim A_Canonical = Matrix.Build.DenseOfArray({{1, 0, 0, 2, 1, -3},
+                                                   {0, 1, 0, 2, -1, 5},
+                                                 {0, 0, 1, -4, 1, 1}}) '' Values Page 56
+
+        Dim b_Canonical = Vector.Build.DenseOfArray({2, 6, 6}) '' Make a Double Array
+        Dim c = Vector.Build.DenseOfArray({0, 0, 0, -1, -2, -1}) '' Objective Coefficients
         '' this returns all zeros as solution probably problem with optimal solution
         ''**********************************
 
