@@ -66,12 +66,27 @@ Module Program
         ratio = Set_Ratio(A_Canonical, b_Canonical, Basic_Index, q)
         IsUnBounded = Boundedness_Check(ratio)
         oBasic_Index = Order_Basic_Index(Basic_Index, A_Canonical)
-        ''p = Exiting_Index(ratio, oBasic_Index)
+        p = Exiting_Index(ratio, oBasic_Index)
 
         Console.WriteLine(A_Canonical(1, 1))
 
 
     End Sub
+
+    Private Function Exiting_Index(ratio As Vector(Of Double), oBasic_Index As Vector(Of Double)) As Integer
+        Dim p As Integer
+        Dim temp As Double = 100000.0 '' Lowest positive Ratio 0
+        Dim temp1 As Integer = 0 '' Indexing 
+        For Each i In ratio
+            If i > 0 And i < temp Then
+                temp = i
+                p = temp1
+            End If
+            temp1 = temp1 + 1
+        Next
+        Return p
+        ''Throw New NotImplementedException()
+    End Function
 
     Private Function Order_Basic_Index(basic_Index As List(Of Integer), a_Canonical As Matrix(Of Double)) As Vector(Of Double)
         Dim temp As New List(Of Double) '' Catch the 1s
