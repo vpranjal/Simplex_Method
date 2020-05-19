@@ -55,7 +55,7 @@ Module Program
         r = Compute_r(c, z)
         '' IsOptimal-> Check Method (Step 2) return a boolean
         '' Hari: r if all positive numbers >=0 , Optimal 1, Any negetive 0 , nonOptimal
-
+        IsOptimal = Optimal_Check(r, Non_Basic_Index)
         '' Incoming Index-> Method (Step 2)
         '' Pranjal: Retun me an index q As Integer: the index of the most negetive element in (r, Non_Basic_Index) 
         q = Incoming_Index(r, Non_Basic_Index)
@@ -64,6 +64,17 @@ Module Program
 
 
     End Sub
+
+    Private Function Optimal_Check(r As Vector(Of Double), non_Basic_Index As List(Of Integer)) As Boolean
+        Dim temp As Boolean = True
+        For Each j In non_Basic_Index
+            If r(j) < 0 Then
+                temp = False
+            End If
+        Next
+        Return temp
+        ''Throw New NotImplementedException()
+    End Function
 
     Private Function Incoming_Index(r As Vector(Of Double), non_Basic_Index As List(Of Integer)) As Integer
         Dim threshold As Integer = 0
