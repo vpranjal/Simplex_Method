@@ -47,6 +47,7 @@ Module Program
         Dim q As Integer '' Incoming Index
         Dim p As Integer '' Leaving Index
         Dim IsOptimal As Boolean '' 1 if Solution is Optimal, 0 otherwise
+        Dim IsUnBounded As Boolean '' 1 if problem is unbounded, 0 otherwise
         nBasic = Basic_Index.Count
         Dim ratio = Vector(Of Double).Build.Dense(nBasic)
         Degenerate = IsDegenerate(Basic_Index, x) '' 1 if System is Degenerate, 0 if System is Non-Degererate
@@ -62,11 +63,22 @@ Module Program
         '' Pranjal: Retun me an index q As Integer: the index of the most negetive element in (r, Non_Basic_Index) 
         q = Incoming_Index(r, Non_Basic_Index)
         ratio = Set_Ratio(A_Canonical, b_Canonical, Basic_Index, q)
-
+        IsUnBounded = Boundedness_Check(ratio)
         Console.WriteLine(A_Canonical(1, 1))
 
 
     End Sub
+
+    Private Function Boundedness_Check(ratio As Vector(Of Double)) As Boolean
+        Dim temp As Boolean = True
+        For Each i In ratio
+            If i > 0 Then
+                temp = False
+            End If
+        Next
+        Return temp
+        ''Throw New NotImplementedException()
+    End Function
 
     Private Function Set_Ratio(a_Canonical As Matrix(Of Double), b_Canonical As Vector(Of Double), basic_Index As List(Of Integer), q As Integer) As Vector(Of Double)
         Dim temp = Vector(Of Double).Build.Dense(basic_Index.Count)
