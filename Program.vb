@@ -71,6 +71,56 @@ Module Program
         p = Exiting_Index(ratio, oBasic_Index)
         pivot(A_Canonical, b_Canonical, A_next, b_next, p, q)
 
+        While Not IsOptimal
+            Basic_Index = Find_Basic(A_Canonical)
+            Non_Basic_Index = Find_Non_Basic(A_Canonical, Basic_Index)
+            nCols = A_Canonical.ColumnCount '' Number of Columns of A
+            nRows = A_Canonical.RowCount '' Number of Rows of A
+            x = Get_x(A_Canonical, b_Canonical, Basic_Index, Non_Basic_Index)
+            Degenerate = IsDegenerate(Basic_Index, x)
+            If Degenerate Then
+                Console.WriteLine("Degenerate A: May go into Cyclic Iterations- Not Handeled")
+            End If
+            nBasic = Basic_Index.Count
+            z = Compute_z(A_Canonical, c, Basic_Index)
+            r = Compute_r(c, z)
+            q = Incoming_Index(r, Non_Basic_Index)
+            ratio = Set_Ratio(A_Canonical, b_Canonical, Basic_Index, q)
+            IsUnBounded = Boundedness_Check(ratio)
+            If IsUnBounded Then
+                Console.WriteLine("Problem Unbounded- Stop")
+                Exit While
+            End If
+            oBasic_Index = Order_Basic_Index(Basic_Index, A_Canonical)
+            p = Exiting_Index(ratio, oBasic_Index)
+
+            '' Pivot
+            pivot(A_Canonical, b_Canonical, A_next, b_next, p, q)
+            'A_Canonical = A_next
+            '' Deep Copy
+            For i = 0 To nRows - 1
+                For j = 0 To nCols - 1
+                    A_Canonical(i, j) = A_next(i, j)
+                Next
+                b_Canonical(i) = b_next(i)
+            Next
+
+            'b_Canonical = b_next '' Check if this is good copy or not
+            A_next.Clear()
+            b_next.Clear()
+            '' After Pivot
+            Basic_Index = Find_Basic(A_Canonical)
+            Non_Basic_Index = Find_Non_Basic(A_Canonical, Basic_Index)
+            z = Compute_z(A_Canonical, c, Basic_Index)
+            r = Compute_r(c, z)
+
+            '' Optimality Check
+            IsOptimal = Optimal_Check(r, Non_Basic_Index)
+            x = Get_x(A_Canonical, b_Canonical, Basic_Index, Non_Basic_Index)
+            Console.WriteLine(nIter)
+            Console.WriteLine(c * x)
+            nIter = nIter + 1
+        End While
         Console.WriteLine(A_Canonical(1, 1))
 
 
@@ -175,8 +225,8 @@ Module Program
                 threshold = r(j)
             End If
         Next
-        ''Return temp
-        Return 1
+        Return temp
+        ''Return 1
         Throw New NotImplementedException()
     End Function
 
@@ -288,7 +338,7 @@ Module Program
             '' Hemant: Write a methond: Give is this identity
             '' 
             If Util_IsIdentity(M) Then
-                Console.WriteLine("i is : ", i(0), i(1), i(2))
+                ''Console.WriteLine("i is : ", i(0), i(1), i(2))
                 Return i
             End If
             '' Break the loop
