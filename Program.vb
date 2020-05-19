@@ -15,7 +15,7 @@ Module Program
                                                     {1.0, 2.0, 3.0, 0.0, 1.0, 0.0},
                                                     {2.0, 2.0, 1.0, 0.0, 0.0, 1.0}}) '' Values Example 1: Chapter 3 Page 48
 
-        Dim b_Canonical = Vector.Build.DenseOfArray({2.0, 5.0, 5.0}) '' Make a Double Array
+        Dim b_Canonical = Vector.Build.DenseOfArray({2.0, 5.0, 6.0}) '' Make a Double Array
         Dim c = Vector.Build.DenseOfArray({-3.0, -1.0, -3.0, 0.0, 0.0, 0.0}) '' Objective Coefficients
         Dim Basic_Index As List(Of Integer) ''
         Dim oBasic_Index As Vector(Of Double) '' Ordered Basic Index
@@ -42,6 +42,8 @@ Module Program
         Non_Basic_Index = Find_Non_Basic(A_Canonical, Basic_Index)
         nCols = A_Canonical.ColumnCount '' Number of Columns of A
         nRows = A_Canonical.RowCount '' Number of Rows of A
+        Dim A_next = Matrix(Of Double).Build.Dense(nRows, nCols) '' For next iteration A
+        Dim b_next = Vector(Of Double).Build.Dense(nRows) '' For next iteration b
         Dim x = Vector(Of Double).Build.Dense(nCols)
         Dim r = Vector(Of Double).Build.Dense(nCols) '' Relative Cost
         x = Get_x(A_Canonical, b_Canonical, Basic_Index, Non_Basic_Index) '' (0, 0, 0,2,5,5) 
@@ -67,10 +69,30 @@ Module Program
         IsUnBounded = Boundedness_Check(ratio)
         oBasic_Index = Order_Basic_Index(Basic_Index, A_Canonical)
         p = Exiting_Index(ratio, oBasic_Index)
+        pivot(A_Canonical, b_Canonical, A_next, b_next, p, q)
 
         Console.WriteLine(A_Canonical(1, 1))
 
 
+    End Sub
+
+    Private Sub pivot(a_Canonical As Matrix(Of Double), b_Canonical As Vector(Of Double), ByRef a_next As Matrix(Of Double), ByRef b_next As Vector(Of Double), p As Integer, q As Integer)
+        Dim nCols As Integer = a_Canonical.ColumnCount '' Number of Columns of A
+        Dim nRows As Integer = a_Canonical.RowCount '' Number of Rows of A
+        For i = 0 To nRows - 1
+            For j = 0 To nCols - 1
+                If i <> p Then
+                    a_next(i, j) = a_Canonical(i, j) - (a_Canonical(i, q) / a_Canonical(p, q)) * a_Canonical(p, j)
+                    b_next(i) = b_Canonical(i) - (a_Canonical(i, q) / a_Canonical(p, q)) * b_Canonical(p)
+                Else
+                    a_next(i, j) = (a_Canonical(p, j) / a_Canonical(p, q))
+                    b_next(i) = (b_Canonical(p) / a_Canonical(p, q))
+                End If
+
+            Next
+        Next
+
+        ''Throw New NotImplementedException()
     End Sub
 
     Private Function Exiting_Index(ratio As Vector(Of Double), oBasic_Index As Vector(Of Double)) As Integer
