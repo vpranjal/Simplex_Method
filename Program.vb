@@ -50,14 +50,18 @@ Module Program
 
 
 
+
         ''nBasic = Sum_Array(Basic_Index) '' Number of Basic Variables
         ''
 
         '' Compute r and z
         z = Compute_z(A_Canonical, c)
-        '' Hari: Write a Method to see r-z vector
+        '' Hari: Write a Method to see r(j)=c(j)-z(j) vector
         '' All negetive elements
         '' Coulumn Index 0 Starts
+
+        '' Incoming Index-> Method (Step 2)
+        '' IsOptimal-> Check Method (Step 2)
 
         Console.WriteLine(A_Canonical(1, 1))
 
