@@ -19,6 +19,8 @@ Module Program
 
         Dim c = Vector.Build.DenseOfArray({-3.0, -1.0, -3.0, 0.0, 0.0, 0.0}) '' Objective Coefficients
         Dim Basic_Index As List(Of Integer) ''
+        Dim All_Index As List(Of Integer)
+        Dim Non_Basic_Index As List(Of Integer)
         Dim nBasic As Integer  '' Number of Basic Variables
         Dim Degenerate As Boolean '' 1 if Degenrate, 0 if Non-Degenrate
         Dim nCols As Integer '' Number of Columns/Variables
@@ -38,8 +40,13 @@ Module Program
         ''c = {-3.0, -1.0, -3.0} '' Values Example 1: Chapter 3 Page 48
 
         Basic_Index = Find_Basic(A_Canonical)
+        Non_Basic_Index = Find_Non_Basic(A_Canonical, Basic_Index)
         nCols = A_Canonical.ColumnCount '' Number of Columns of A
         nRows = A_Canonical.RowCount '' Number of Rows of A
+        ''Initialize All_Index
+
+
+
         ''nBasic = Sum_Array(Basic_Index) '' Number of Basic Variables
         ''Degenerate = IsDegenerate(nBasic, nRows) '' 1 if System is Degenerate, 0 if System is Non-Degererate
 
@@ -53,6 +60,27 @@ Module Program
 
 
     End Sub
+
+    Private Function Find_Non_Basic(a_Canonical As Matrix(Of Double), basic_Index As List(Of Integer)) As List(Of Integer)
+        Dim All_Index As New List(Of Integer)
+        Dim Non_Basic_Index As New List(Of Integer)
+        Dim nCols As Integer = a_Canonical.ColumnCount '' Number of Columns of A
+        Dim nRows As Integer = a_Canonical.RowCount '' Number of Rows of A
+        For j = 0 To nCols - 1
+            All_Index.Add(j)
+            Dim temp = 0
+            For Each i In basic_Index
+                If j <> i Then
+                    temp += 1
+                End If
+            Next
+            If temp = basic_Index.Count() Then
+                Non_Basic_Index.Add(j)
+            End If
+        Next
+        Return Non_Basic_Index
+        Throw New NotImplementedException()
+    End Function
 
     Private Function Compute_z(a_Canonical As Matrix(Of Double), c As Vector(Of Double)) As Vector(Of Double)
         Dim nCols As Integer = a_Canonical.ColumnCount '' Number of Columns of A
