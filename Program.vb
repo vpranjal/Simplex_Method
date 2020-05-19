@@ -43,7 +43,7 @@ Module Program
         nRows = A_Canonical.RowCount '' Number of Rows of A
         Dim x = Vector(Of Double).Build.Dense(nCols)
         Dim r = Vector(Of Double).Build.Dense(nCols) '' Relative Cost
-        x = Get_x(A_Canonical, b_Canonical, Basic_Index, Non_Basic_Index) '' (2,5,5,0,0,0) '' Hemant
+        x = Get_x(A_Canonical, b_Canonical, Basic_Index, Non_Basic_Index) '' (0, 0, 0,2,5,5) '' Hemant
         nBasic = Basic_Index.Count
         Degenerate = IsDegenerate(Basic_Index, x) '' 1 if System is Degenerate, 0 if System is Non-Degererate
 
@@ -51,9 +51,11 @@ Module Program
         z = Compute_z(A_Canonical, c, Basic_Index)
         '' Write a Method to see r(j)=c(j)-z(j) vector
         r = Compute_r(c, z)
+        '' IsOptimal-> Check Method (Step 2) return a boolean
+        '' Hari: r if all positive numbers >=0 , Optimal 1, Any negetive 0 , nonOptimal
 
         '' Incoming Index-> Method (Step 2)
-        '' IsOptimal-> Check Method (Step 2)
+        '' Pranjal: Retun me an index q As Integer: the index of the most negetive element in (r, Non_Basic_Index) 
 
         Console.WriteLine(A_Canonical(1, 1))
 
@@ -74,7 +76,7 @@ Module Program
         '' See if col is non basic-> Add temp(j)= 0
         '' See if col is basic-?
         '' Find the non zero row index (Loop All Rows (i)- Find If A(i,j)=1, then temp(j)=b(i))
-        Dim temp = Vector.Build.DenseOfArray({2.0, 5.0, 5.0, 0.0, 0.0, 0.0}) '' Make a Double Array
+        Dim temp = Vector.Build.DenseOfArray({0.0, 0.0, 0.0, 2.0, 5.0, 5.0}) '' Make a Double Array
         Return temp
         Throw New NotImplementedException()
     End Function
@@ -106,7 +108,7 @@ Module Program
         Dim temp = Vector(Of Double).Build.Dense(nCols)
         For j = 0 To nCols - 1
             For i = 0 To nRows - 1
-                temp(j) = temp(j) + (c(Basic_Index(i)) * a_Canonical(i, j)) '' Check www.youtube.com/watch?v=Enjuh1_mVMY
+                temp(j) = temp(j) + (c(Basic_Index(i)) * a_Canonical(i, j)) '' Check www.youtube.com/watch?v=Enjuh1_mVMY' Index c should be of basic variables only
             Next
         Next
         Return temp
