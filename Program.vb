@@ -25,7 +25,6 @@ Module Program
         Dim nCols As Integer '' Number of Columns/Variables
         Dim nRows As Integer '' Number of Rows/Constraints
         Dim nIter As Integer = 0 '' Number of Iterations
-        Dim r As Double() '' Relative Cost
         Dim z As Vector(Of Double) '' Eqn (23) Page 43
 
 
@@ -43,22 +42,15 @@ Module Program
         nCols = A_Canonical.ColumnCount '' Number of Columns of A
         nRows = A_Canonical.RowCount '' Number of Rows of A
         Dim x = Vector(Of Double).Build.Dense(nCols)
+        Dim r = Vector(Of Double).Build.Dense(nCols) '' Relative Cost
         x = Get_x(A_Canonical, b_Canonical, Basic_Index, Non_Basic_Index) '' (2,5,5,0,0,0) '' Hemant
         nBasic = Basic_Index.Count
         Degenerate = IsDegenerate(Basic_Index, x) '' 1 if System is Degenerate, 0 if System is Non-Degererate
-        ''Initialize All_Index
-
-
-
-
-        ''nBasic = Sum_Array(Basic_Index) '' Number of Basic Variables
-        ''
 
         '' Compute r and z
-        z = Compute_z(A_Canonical, c)
-        '' Hari: Write a Method to see r(j)=c(j)-z(j) vector
-        '' All negetive elements
-        '' Coulumn Index 0 Starts
+        z = Compute_z(A_Canonical, c, Basic_Index)
+        '' Write a Method to see r(j)=c(j)-z(j) vector
+        r = Compute_r(c, z)
 
         '' Incoming Index-> Method (Step 2)
         '' IsOptimal-> Check Method (Step 2)
@@ -67,6 +59,15 @@ Module Program
 
 
     End Sub
+
+    Private Function Compute_r(c As Vector(Of Double), z As Vector(Of Double)) As Vector(Of Double)
+        Dim temp = Vector(Of Double).Build.Dense(c.Count())
+        For j = 0 To c.Count() - 1
+            temp(j) = c(j) - z(j)
+        Next
+        Return temp
+        ''Throw New NotImplementedException()
+    End Function
 
     Private Function Get_x(a_Canonical As Matrix(Of Double), b_Canonical As Vector(Of Double), basic_Index As List(Of Integer), non_Basic_Index As List(Of Integer)) As Vector(Of Double)
         '' Go thorugh all the cols(j) in A
@@ -99,13 +100,13 @@ Module Program
         Throw New NotImplementedException()
     End Function
 
-    Private Function Compute_z(a_Canonical As Matrix(Of Double), c As Vector(Of Double)) As Vector(Of Double)
+    Private Function Compute_z(a_Canonical As Matrix(Of Double), c As Vector(Of Double), Basic_Index As List(Of Integer)) As Vector(Of Double)
         Dim nCols As Integer = a_Canonical.ColumnCount '' Number of Columns of A
         Dim nRows As Integer = a_Canonical.RowCount '' Number of Rows of A
         Dim temp = Vector(Of Double).Build.Dense(nCols)
         For j = 0 To nCols - 1
             For i = 0 To nRows - 1
-                temp(j) = temp(j) + (c(j) * a_Canonical(i, j))
+                temp(j) = temp(j) + (c(Basic_Index(i)) * a_Canonical(i, j)) '' Check www.youtube.com/watch?v=Enjuh1_mVMY
             Next
         Next
         Return temp
