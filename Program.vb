@@ -11,6 +11,10 @@ Module Program
         '' We have these matrices somehow
         '' Note: A Has a Full Rank Assumption -> Chapter 2 Page 19
         '' Dim A_Canonical As Double()()  '' Makes a Double Array
+
+        '' Chcek for Page : 66: 4th Edition
+        '' Check 56, 54
+
         Dim A_Canonical = Matrix.Build.DenseOfArray({{2.0, 1.0, 1.0, 1.0, 0.0, 0.0},
                                                     {1.0, 2.0, 3.0, 0.0, 1.0, 0.0},
                                                     {2.0, 2.0, 1.0, 0.0, 0.0, 1.0}}) '' Values Example 1: Chapter 3 Page 48
@@ -37,7 +41,10 @@ Module Program
         ''          ({2.0, 2.0, 1.0, 0.0, 0.0, 1.0})} '' Values Example 1: Chapter 3 Page 48
         ''b_Canonical = {2.0, 5.0, 5.0} '' Values Example 1: Chapter 3 Page 48
         ''c = {-3.0, -1.0, -3.0} '' Values Example 1: Chapter 3 Page 48
-
+        '' **********************************
+        '' Pink Elephant - Linear Program Solver
+        '' Initiate...
+        '' Loading problem...
         Basic_Index = Find_Basic(A_Canonical)
         Non_Basic_Index = Find_Non_Basic(A_Canonical, Basic_Index)
         nCols = A_Canonical.ColumnCount '' Number of Columns of A
@@ -69,8 +76,8 @@ Module Program
         IsUnBounded = Boundedness_Check(ratio)
         oBasic_Index = Order_Basic_Index(Basic_Index, A_Canonical)
         p = Exiting_Index(ratio, oBasic_Index)
-        pivot(A_Canonical, b_Canonical, A_next, b_next, p, q)
-
+        ''pivot(A_Canonical, b_Canonical, A_next, b_next, p, q)
+        '' Start Solve..
         While Not IsOptimal
             Basic_Index = Find_Basic(A_Canonical)
             Non_Basic_Index = Find_Non_Basic(A_Canonical, Basic_Index)
@@ -117,10 +124,19 @@ Module Program
             '' Optimality Check
             IsOptimal = Optimal_Check(r, Non_Basic_Index)
             x = Get_x(A_Canonical, b_Canonical, Basic_Index, Non_Basic_Index)
+            nIter = nIter + 1
+            '' Iteration No: nIter, Objective Value: c*x, Reached Optimality: False
+
             Console.WriteLine(nIter)
             Console.WriteLine(c * x)
-            nIter = nIter + 1
+
         End While
+        '' *****************************
+        '' Optimal Solution Found
+        '' Opyimal solution: [ x ]
+        '' Optimal Value: c*x
+
+
         Console.WriteLine(A_Canonical(1, 1))
 
 
@@ -307,6 +323,10 @@ Module Program
         Dim nCols As Integer = a_Canonical.ColumnCount '' Number of Columns of A
         Dim nRows As Integer = a_Canonical.RowCount '' Number of Rows of A
         Dim nCols_C_nRows As Integer = nComb(nCols, nRows) '' nCr  
+        '' Dim check the combination
+        '' Dim test As Integer '' user nCr from Math Net
+        '' Hari
+
         Dim temp1 As Integer = nCols - nRows '' Number of cols - Number of rows
         Dim Cols As Integer()
         ReDim Cols(nCols - 1) '' Redim Cols
